@@ -1,0 +1,19 @@
+# --- Procesamiento de Video y Visión ---
+opencv-python      # Manipulación de frames y video
+mediapipe         # Extracción de biometría facial y detección rápida
+numpy             # Operaciones matriciales para embeddings
+
+# --- Procesamiento de Audio ---
+librosa           # Extracción de MFCCs y características espectrales
+soundfile         # Lectura de diversos formatos de audio
+scipy             # Filtros y procesamiento de señales
+
+# --- Inteligencia Artificial y Clusterización ---
+scikit-learn      # Algoritmos de clusterización (K-Means, DBSCAN) y PCA
+torch             # Framework base para modelos pre-entrenados (FaceNet/Audio)
+facenet-pytorch   # Obtención de embeddings faciales de 512-d
+
+# --- Utilidades ---
+moviepy           # Para separar fácilmente el audio del video
+pandas            # Estructuración de las tuplas y exportación de datos
+matplotlib        # Visualización de los clusters resultantes
