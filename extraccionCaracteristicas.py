@@ -106,7 +106,7 @@ def main():
         
         # Base de la fila
         fila = {
-            'id': row['id'],
+            'ID': row['ID'],
             'Titulo': row['Titulo'],
             'URL': row['URL']
         }
