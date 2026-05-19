@@ -4,12 +4,6 @@ import requests
 from yt_dlp import YoutubeDL
 from urllib.parse import urlparse, parse_qs
 
-# =========================================
-# CONFIG
-# =========================================
-
-
-# Lista de URLs de YouTube
 video_urls = [
     "https://www.youtube.com/watch?v=jkREZ1KHgQo",
     "https://www.youtube.com/watch?v=IzyjztxOIoY",
@@ -38,7 +32,53 @@ video_urls = [
     "https://www.youtube.com/watch?v=qNY-WAm64Ks",
     "https://www.youtube.com/watch?v=Upr_HxRPfe4",
     "https://www.youtube.com/watch?v=vCvL5cvCzOg",
-    "https://www.youtube.com/watch?v=Chjtv8jlFy4"
+    "https://www.youtube.com/watch?v=Chjtv8jlFy4",
+    "https://www.youtube.com/watch?v=p5Z5o3Y2RGE",
+    "https://www.youtube.com/watch?v=DhxCvCLyX28",
+    "https://www.youtube.com/watch?v=tFN6K0P4I5o",
+    "https://www.youtube.com/watch?v=_iAUVTo49X0",
+    "https://www.youtube.com/watch?v=jQRqPAVqOXg",
+    "https://www.youtube.com/watch?v=l8_-QlNKapk",
+    "https://www.youtube.com/watch?v=e5BxviL18OU",
+    "https://www.youtube.com/watch?v=zlHfc0w551s",
+    "https://www.youtube.com/watch?v=f079K1f2WQk",
+    "https://www.youtube.com/watch?v=pg827uDPFqA",
+    "https://www.youtube.com/watch?v=QbfEqW1Ok-o",
+    "https://www.youtube.com/watch?v=F_b1aMDliZs",
+    "https://www.youtube.com/watch?v=4159g7iIzYs",
+    "https://www.youtube.com/watch?v=FYKVVzCKIV8",
+    "https://www.youtube.com/watch?v=iIXW5OFBbhA",
+    "https://www.youtube.com/watch?v=IIPT2aUshoY",
+    "https://www.youtube.com/watch?v=Tj-d2C4VoRQ",
+    "https://www.youtube.com/watch?v=CHUGcDhhYho",
+    "https://www.youtube.com/watch?v=tTnBdukIagk",
+    "https://www.youtube.com/watch?v=OV2tKvUU9sM",
+    "https://www.youtube.com/watch?v=ObpWslmNu3Y",
+    "https://www.youtube.com/watch?v=RA9liM80Lj0",
+    "https://www.youtube.com/watch?v=NGBLP4gaxck",
+    "https://www.youtube.com/watch?v=fSQa9Rw5ciI",
+    "https://www.youtube.com/watch?v=deDthQAegq8",
+    "https://www.youtube.com/watch?v=pfG3VLb3HLo",
+    "https://www.youtube.com/watch?v=UmP4sEgbh34",
+    "https://www.youtube.com/watch?v=L9YkIfxd2r4",
+    "https://www.youtube.com/watch?v=rHtg76J2hxE",
+    "https://www.youtube.com/watch?v=rHEJDyn7Ksc",
+    "https://www.youtube.com/watch?v=02Ifd-V9zmI",
+    "https://www.youtube.com/watch?v=ec2mvL_ri80",
+    "https://www.youtube.com/watch?v=R7GshNn2Ygc",
+    "https://www.youtube.com/watch?v=1ls1t7OyHiQ",
+    "https://www.youtube.com/watch?v=WOa9JGSnC-k",
+    "https://www.youtube.com/watch?v=ZfnhfwdB7PQ",
+    "https://www.youtube.com/watch?v=_NACkSeX8SE",
+    "https://www.youtube.com/watch?v=qYjD_CG1LUs",
+    "https://www.youtube.com/watch?v=LuZV9kkzscg",
+    "https://www.youtube.com/watch?v=JF6EE8Raq1k",
+    "https://www.youtube.com/watch?v=FriJDiVXH2c",
+    "https://www.youtube.com/watch?v=ihTCa_K-WyY",
+    "https://www.youtube.com/watch?v=6jRcm4GndeY",
+    "https://www.youtube.com/watch?v=fJZpHmI26fU",
+    "https://www.youtube.com/watch?v=VxP4MPYvxjA",
+    "https://www.youtube.com/watch?v=gzhkg2lhloY"
 ]
 
 

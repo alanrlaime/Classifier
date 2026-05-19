@@ -17,3 +17,7 @@ facenet-pytorch   # Obtención de embeddings faciales de 512-d
 moviepy           # Para separar fácilmente el audio del video
 pandas            # Estructuración de las tuplas y exportación de datos
 matplotlib        # Visualización de los clusters resultantes
+requests
+yt-div
+seaborn
+urllib
