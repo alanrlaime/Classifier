@@ -87,10 +87,6 @@ CSV_OUTPUT = "dataset_youtube.csv"
 
 os.makedirs(PORTADAS_DIR, exist_ok=True)
 
-# =========================================
-# DESCARGAR PORTADA
-# =========================================
-
 def descargar_portada(url, filename):
 
     if not url:
@@ -113,10 +109,6 @@ def descargar_portada(url, filename):
 
     return None
 
-# =========================================
-# VIDEO ID
-# =========================================
-
 def obtener_video_id(url):
 
     parsed = urlparse(url)
@@ -129,10 +121,6 @@ def obtener_video_id(url):
 
     return None
 
-# =========================================
-# YDL CONFIG
-# =========================================
-
 ydl_opts = {
     "quiet": True,
     "skip_download": True,
@@ -142,9 +130,6 @@ ydl_opts = {
 
 dataset = []
 
-# =========================================
-# EXTRAER DATOS
-# =========================================
 
 with YoutubeDL(ydl_opts) as ydl:
 
@@ -156,9 +141,6 @@ with YoutubeDL(ydl_opts) as ydl:
 
             formatos = info.get("formats", [])
 
-            # --------------------------------
-            # FILTRAR FORMATOS VALIDOS
-            # --------------------------------
 
             formatos_validos = [
                 f for f in formatos
@@ -174,9 +156,6 @@ with YoutubeDL(ydl_opts) as ydl:
                     key=lambda x: x.get("height", 0)
                 )
 
-            # --------------------------------
-            # DATOS
-            # --------------------------------
 
             titulo = info.get("title")
             canal = info.get("uploader")
@@ -203,9 +182,6 @@ with YoutubeDL(ydl_opts) as ydl:
                 extension = mejor_formato.get("ext")
                 filesize = mejor_formato.get("filesize")
 
-            # --------------------------------
-            # THUMBNAIL
-            # --------------------------------
 
             thumbnail = info.get("thumbnail")
 
@@ -215,10 +191,6 @@ with YoutubeDL(ydl_opts) as ydl:
                 thumbnail,
                 f"{video_id}.jpg"
             )
-
-            # --------------------------------
-            # GUARDAR
-            # --------------------------------
 
             dataset.append({
 
@@ -243,10 +215,6 @@ with YoutubeDL(ydl_opts) as ydl:
 
             print(f"[ERROR] {url}")
             print(e)
-
-# =========================================
-# CSV
-# =========================================
 
 df = pd.DataFrame(dataset)
 

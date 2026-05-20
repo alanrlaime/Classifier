@@ -14,7 +14,6 @@ from algoritmo import AlgoritmoClustering
 # Configuración de la página
 st.set_page_config(
     page_title="Análisis de Clustering Interactivo",
-    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -46,12 +45,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Título principal
-st.title("🎯 Análisis de Clustering Interactivo")
-st.markdown("### Visualización de K-Means con información detallada al hacer clic")
+st.title("Análisis de Clustering Interactivo")
+st.markdown("### Visualización de clusters")
 
 # Sidebar para controles
 with st.sidebar:
-    st.header("⚙️ Configuración")
+    st.header("Configuración")
     
     # Cargar o entrenar modelo
     st.subheader("1. Modelo")
@@ -65,22 +64,22 @@ with st.sidebar:
         n_clusters = st.slider("Número de clusters (K)", 2, 8, 3, 1)
         archivo_datos = st.text_input("Archivo de datos", "extraccion_dataset.csv")
         
-        if st.button("🚀 Entrenar modelo", use_container_width=True):
+        if st.button("Entrenar modelo", use_container_width=True):
             with st.spinner("Entrenando modelo..."):
                 modelo = AlgoritmoClustering(n_clusters=n_clusters)
                 modelo.cargar_datos(archivo_datos).preprocesar().reducir_dimensionalidad().aplicar_clustering()
                 modelo.guardar_modelo()
                 st.session_state['modelo'] = modelo
-                st.success("✅ Modelo entrenado y guardado!")
+                st.success("Modelo entrenado y guardado.")
     else:
         archivo_modelo = st.text_input("Archivo del modelo", "modelo_clustering.pkl")
-        if st.button("📂 Cargar modelo", use_container_width=True):
+        if st.button("Cargar modelo", use_container_width=True):
             try:
                 modelo = AlgoritmoClustering.cargar_modelo(archivo_modelo)
                 st.session_state['modelo'] = modelo
-                st.success("✅ Modelo cargado exitosamente!")
+                st.success("Modelo cargado exitosamente.")
             except FileNotFoundError:
-                st.error(f"❌ No se encontró el archivo {archivo_modelo}")
+                st.error(f"No se encontró el archivo {archivo_modelo}")
     
     # Configuración de visualización
     st.subheader("2. Visualización")
@@ -90,7 +89,7 @@ with st.sidebar:
     mostrar_etiquetas = st.checkbox("Mostrar etiquetas de títulos", value=False)
     
     st.markdown("---")
-    st.markdown("💡 **Instrucciones:**")
+    st.markdown("**Instrucciones:**")
     st.markdown("- Usa el selector para ver información de cada punto")
     st.markdown("- Pasa el mouse sobre los puntos para ver datos básicos")
     st.markdown("- Ajusta los controles para personalizar la vista")
@@ -103,7 +102,7 @@ if 'punto_seleccionado' not in st.session_state:
 
 # Verificar que el modelo esté cargado
 if st.session_state['modelo'] is None:
-    st.warning("⚠️ Por favor, carga o entrena un modelo en la barra lateral izquierda")
+    st.warning("Por favor, carga o entrena un modelo en la barra lateral izquierda")
     st.stop()
 
 modelo = st.session_state['modelo']
@@ -112,7 +111,7 @@ modelo = st.session_state['modelo']
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.header("📈 Visualización del Clustering")
+    st.header("Visualización del Clustering")
     
     # Crear gráfico interactivo con Plotly
     df_plot = pd.DataFrame({
@@ -207,7 +206,7 @@ with col1:
     st.plotly_chart(fig, use_container_width=True, key="clustering_plot")
     
     # Selector de punto
-    st.subheader("🔍 Selección de muestra")
+    st.subheader("Selección de muestra")
     indices_disponibles = list(range(len(modelo.X_pca)))
     
     # Crear opciones con formato amigable
@@ -225,85 +224,230 @@ with col1:
         st.session_state['punto_seleccionado'] = idx_seleccionado
 
 with col2:
-    st.header("ℹ️ Información de la muestra")
+    st.header("Información de la muestra")
     
     if st.session_state['punto_seleccionado'] is not None:
         idx = st.session_state['punto_seleccionado']
         info = modelo.get_info_muestra(idx)
+        datos_muestra = modelo.datos_originales.iloc[idx]
         
-        # Métricas principales
         col2a, col2b, col2c = st.columns(3)
         with col2a:
-            st.metric("📌 Índice", info['Índice'])
+            st.metric("Índice", info['Índice'])
         with col2b:
-            st.metric("🏷️ Cluster", info['Cluster'])
+            st.metric("Cluster", info['Cluster'])
         with col2c:
-            st.metric("📊 Total muestras", len(modelo.X_pca))
+            st.metric("Total muestras", len(modelo.X_pca))
         
-        # Información del título
-        st.markdown(f"""
-        <div class="info-box">
-            <b>📖 Título:</b><br>
-            <span style="font-size: 18px; font-weight: bold;">{info['Título']}</span>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("---")
         
-        # Coordenadas PCA
-        st.subheader("📍 Coordenadas PCA")
-        st.markdown(f"""
-        - **Componente 1:** {info['Coordenadas PCA']['x']:.4f}
-        - **Componente 2:** {info['Coordenadas PCA']['y']:.4f}
-        """)
+        tab1, tab2, tab3, tab4 = st.tabs(["Contenido", "Características", "Posición", "Todos los datos"])
         
-        # Valores numéricos
-        st.subheader("🔢 Valores numéricos")
-        df_numericos = pd.DataFrame([info['Valores numéricos']]).T
-        df_numericos.columns = ['Valor']
-        st.dataframe(df_numericos, use_container_width=True)
+        with tab1:
+            st.subheader("Información General")
+            
+            col_cont1, col_cont2 = st.columns([2, 1])
+            
+            with col_cont1:
+                st.markdown(f"""
+                <div class="info-box">
+                    <b style="font-size: 16px;">Título del Video</b><br>
+                    <span style="font-size: 14px; font-weight: bold;">{info['Título']}</span>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                if 'Canal' in datos_muestra:
+                    st.markdown(f"**Canal:** {datos_muestra['Canal']}")
+                
+                if 'Fecha_Subida' in datos_muestra:
+                    st.markdown(f"**Fecha de subida:** {datos_muestra['Fecha_Subida']}")
+                
+                if 'Duracion_Segundos' in datos_muestra:
+                    duracion_min = int(datos_muestra['Duracion_Segundos'] / 60)
+                    duracion_seg = int(datos_muestra['Duracion_Segundos'] % 60)
+                    st.markdown(f"**Duración:** {duracion_min}m {duracion_seg}s")
+                
+                if 'Resolucion' in datos_muestra:
+                    st.markdown(f"**Resolución:** {datos_muestra['Resolucion']}")
+            
+            with col_cont2:
+                if 'Thumbnail_URL' in datos_muestra and pd.notna(datos_muestra['Thumbnail_URL']):
+                    try:
+                        st.image(datos_muestra['Thumbnail_URL'], use_container_width=True, caption="Portada")
+                    except:
+                        st.warning("No se pudo cargar la portada")
+                elif 'Ruta_Portada' in datos_muestra and pd.notna(datos_muestra['Ruta_Portada']):
+                    try:
+                        st.image(datos_muestra['Ruta_Portada'], use_container_width=True, caption="Portada local")
+                    except:
+                        st.info("Imagen local no disponible")
+                else:
+                    st.info("Sin portada disponible")
+            
+            st.markdown("---")
+            st.subheader("Enlaces")
+            
+            if 'URL' in datos_muestra and pd.notna(datos_muestra['URL']):
+                st.markdown(f"[🔗 Ver video en YouTube]({datos_muestra['URL']})", unsafe_allow_html=True)
+                st.code(datos_muestra['URL'], language="text")
+            
+            if 'Thumbnail_URL' in datos_muestra and pd.notna(datos_muestra['Thumbnail_URL']):
+                st.markdown(f"[🖼️ Ver portada completa]({datos_muestra['Thumbnail_URL']})", unsafe_allow_html=True)
+            
+            col_info1, col_info2 = st.columns(2)
+            
+            with col_info1:
+                if 'Video_ID' in datos_muestra:
+                    st.markdown(f"**ID del Video:** `{datos_muestra['Video_ID']}`")
+            
+            with col_info2:
+                if 'FPS' in datos_muestra:
+                    st.markdown(f"**FPS:** {datos_muestra['FPS']}")
         
-        # Datos completos
-        with st.expander("📋 Ver todos los datos de la muestra"):
-            df_completo = pd.DataFrame([info['Datos completos']]).T
-            df_completo.columns = ['Valor']
-            st.dataframe(df_completo, use_container_width=True)
+        with tab2:
+            st.subheader("Características Visuales")
+            
+            caracteristicas_visuales = {
+                'brillo': 'Brillo',
+                'contraste': 'Contraste',
+                'densidad_bordes': 'Densidad de bordes',
+                'movimiento': 'Movimiento'
+            }
+            
+            col_car1, col_car2 = st.columns(2)
+            
+            for i, (col_name, label) in enumerate(caracteristicas_visuales.items()):
+                if col_name in datos_muestra:
+                    valor = float(datos_muestra[col_name])
+                    if i % 2 == 0:
+                        with col_car1:
+                            st.metric(label, f"{valor:.2f}")
+                    else:
+                        with col_car2:
+                            st.metric(label, f"{valor:.2f}")
+            
+            st.markdown("---")
+            st.subheader("Información Técnica")
+            
+            tecnica_info = {}
+            if 'Formato' in datos_muestra:
+                tecnica_info['Formato'] = datos_muestra['Formato']
+            if 'FileSize_Bytes' in datos_muestra:
+                size_mb = datos_muestra['FileSize_Bytes'] / (1024 * 1024)
+                tecnica_info['Tamaño'] = f"{size_mb:.2f} MB"
+            
+            for key, value in tecnica_info.items():
+                st.markdown(f"**{key}:** {value}")
+            
+            st.markdown("---")
+            st.subheader("Características de Color")
+            
+            colores_disponibles = [col for col in datos_muestra.index if col.startswith('color_')]
+            
+            if colores_disponibles:
+                col_color1, col_color2 = st.columns(2)
+                
+                for i, col_name in enumerate(colores_disponibles):
+                    valor = float(datos_muestra[col_name])
+                    if i % 2 == 0:
+                        with col_color1:
+                            st.metric(col_name.upper(), f"{valor:.4f}")
+                    else:
+                        with col_color2:
+                            st.metric(col_name.upper(), f"{valor:.4f}")
         
-        # Visualización de la muestra en el contexto
-        st.subheader("🎯 Posición relativa")
+        with tab3:
+            st.subheader("Análisis de Posición en Clustering")
+            
+            col_pos1, col_pos2 = st.columns(2)
+            
+            with col_pos1:
+                st.markdown("**Coordenadas PCA:**")
+                st.markdown(f"- **Componente 1:** `{info['Coordenadas PCA']['x']:.6f}`")
+                st.markdown(f"- **Componente 2:** `{info['Coordenadas PCA']['y']:.6f}`")
+            
+            with col_pos2:
+                cluster_asignado = info['Cluster']
+                st.markdown(f"**Cluster asignado:** `{cluster_asignado}`")
+                
+                distancia_centroide = np.sqrt(
+                    (info['Coordenadas PCA']['x'] - modelo.kmeans.cluster_centers_[cluster_asignado, 0])**2 + 
+                    (info['Coordenadas PCA']['y'] - modelo.kmeans.cluster_centers_[cluster_asignado, 1])**2
+                )
+                st.markdown(f"**Distancia al centroide:** `{distancia_centroide:.4f}`")
+            
+            st.markdown("---")
+            st.subheader("Distancias a todos los centroides")
+            
+            distancias = []
+            for i in range(len(modelo.kmeans.cluster_centers_)):
+                dist = np.sqrt(
+                    (info['Coordenadas PCA']['x'] - modelo.kmeans.cluster_centers_[i, 0])**2 + 
+                    (info['Coordenadas PCA']['y'] - modelo.kmeans.cluster_centers_[i, 1])**2
+                )
+                distancias.append(dist)
+            
+            df_distancias = pd.DataFrame({
+                'Cluster': [f'Cluster {i}' for i in range(len(distancias))],
+                'Distancia': distancias
+            })
+            
+            fig_dist = px.bar(df_distancias, x='Cluster', y='Distancia', 
+                             title="Distancia a cada centroide",
+                             color='Distancia',
+                             color_continuous_scale='Viridis')
+            st.plotly_chart(fig_dist, use_container_width=True)
+            
+            st.success(f"Esta muestra pertenece al **Cluster {cluster_asignado}**")
         
-        # Calcular distancias a centroides
-        distancias = []
-        for i in range(len(modelo.kmeans.cluster_centers_)):
-            dist = np.sqrt((info['Coordenadas PCA']['x'] - modelo.kmeans.cluster_centers_[i, 0])**2 + 
-                          (info['Coordenadas PCA']['y'] - modelo.kmeans.cluster_centers_[i, 1])**2)
-            distancias.append(dist)
+        with tab4:
+            st.subheader("Todos los datos de la muestra")
+            
+            df_todos = pd.DataFrame({
+                'Campo': info['Datos completos'].keys(),
+                'Valor': info['Datos completos'].values()
+            })
+            
+            st.dataframe(df_todos, use_container_width=True, height=500)
+            
+            col_export1, col_export2 = st.columns(2)
+            with col_export1:
+                csv = df_todos.to_csv(index=False)
+                st.download_button(
+                    label="Descargar como CSV",
+                    data=csv,
+                    file_name=f"muestra_{idx}.csv",
+                    mime="text/csv"
+                )
+            with col_export2:
+                json_str = df_todos.set_index('Campo')['Valor'].to_json(indent=2)
+                st.download_button(
+                    label="Descargar como JSON",
+                    data=json_str,
+                    file_name=f"muestra_{idx}.json",
+                    mime="application/json"
+                )
         
-        df_distancias = pd.DataFrame({
-            'Cluster': [f'Cluster {i}' for i in range(len(distancias))],
-            'Distancia al centroide': distancias
-        })
-        st.dataframe(df_distancias, use_container_width=True)
-        
-        # Indicador de pertenencia al cluster
-        cluster_asignado = info['Cluster']
-        st.success(f"✅ Esta muestra pertenece al **Cluster {cluster_asignado}**")
-        
-        # Botón para limpiar selección
-        if st.button("🗑️ Limpiar selección"):
+        st.markdown("---")
+        if st.button("Limpiar selección", use_container_width=True):
             st.session_state['punto_seleccionado'] = None
             st.rerun()
         
     else:
-        st.info("👈 Selecciona una muestra del menú desplegable para ver su información detallada")
+        st.info("Selecciona una muestra del menú desplegable para ver su información detallada")
         st.markdown("""
-        ### 📝 Instrucciones:
+        ### Instrucciones:
         1. Usa el selector de la izquierda para elegir una muestra
-        2. La información completa aparecerá aquí
-        3. También puedes pasar el mouse sobre los puntos del gráfico para ver información básica
+        2. La información completa aparecerá aquí con múltiples pestañas
+        3. Tab "Contenido": Información general, enlaces y portada
+        4. Tab "Características": Datos visuales y técnicos
+        5. Tab "Posición": Análisis de ubicación en clustering
+        6. Tab "Todos los datos": Vista completa y descargable
         """)
 
 # Sección de estadísticas adicionales
 st.markdown("---")
-st.header("📊 Estadísticas del Clustering")
+st.header("Estadísticas del Clustering")
 
 col_stats1, col_stats2, col_stats3, col_stats4 = st.columns(4)
 
@@ -337,7 +481,7 @@ with col_stats4:
         st.markdown('</div>', unsafe_allow_html=True)
 
 # Distribución de clusters
-st.subheader("📊 Distribución de muestras por cluster")
+st.subheader("Distribución de muestras por cluster")
 df_clusters = pd.DataFrame({
     'Cluster': [f'Cluster {i}' for i in range(modelo.n_clusters)],
     'Cantidad': [np.sum(modelo.labels_kmeans == i) for i in range(modelo.n_clusters)]
@@ -360,7 +504,7 @@ with col_chart2:
     st.plotly_chart(fig_pie, use_container_width=True)
 
 # Matriz de correlación (opcional)
-with st.expander("📈 Ver matriz de correlación de características numéricas"):
+with st.expander("Ver matriz de correlación de características numéricas"):
     try:
         fig_corr = px.imshow(modelo.X_numeric.corr(), 
                              text_auto=True, 
@@ -376,8 +520,8 @@ with st.expander("📈 Ver matriz de correlación de características numéricas
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: gray; padding: 20px;">
-    <p>🎯 Aplicación interactiva de clustering | Desarrollada con Streamlit, Plotly y scikit-learn</p>
-    <p>💡 Los puntos coloreados representan los clusters identificados por K-Means</p>
-    <p>🔍 Selecciona una muestra del menú desplegable para ver todos sus detalles</p>
+    <p>Aplicación interactiva de clustering | Desarrollada con Streamlit, Plotly y scikit-learn</p>
+    <p>Los puntos coloreados representan los clusters identificados por K-Means</p>
+    <p>Selecciona una muestra del menú desplegable para ver todos sus detalles</p>
 </div>
 """, unsafe_allow_html=True)
